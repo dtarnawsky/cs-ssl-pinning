@@ -43,46 +43,9 @@ To validate if your `.cer` file is in the right format (DER) you can run this co
 If it throws an error `unable to load certificate` then you know your file is using an incorrect format
 
 ## Notes
-In `src/android/com/silkimen/cordovahttp/CordovaServerTrust.java` it is reading from `www/certificates` and should also pull from `public/certificates` to work for Capacitor.
-In `src/ios/SM_AFNetworking/SM_AFSecurityPolicy.m` it is similar
-
-```objectivec
-+ (NSSet *)certificatesInBundle:(NSBundle *)bundle {
-    NSArray *paths = [bundle pathsForResourcesOfType:@"cer" inDirectory:@"www/certificates"];
-    NSArray *capPaths = [bundle pathsForResourcesOfType:@"cer" inDirectory:@"public/certificates"];
-    NSMutableSet *certificates = [NSMutableSet setWithCapacity:[paths count]];
-
-    for (NSString *path in paths) {
-        NSData *certificateData = [NSData dataWithContentsOfFile:path];
-        [certificates addObject:certificateData];
-    }
-
-    for (NSString *path in capPaths) {
-        NSData *certificateData = [NSData dataWithContentsOfFile:path];
-        [certificates addObject:certificateData];
-    }    
-
-    return [NSSet setWithSet:certificates];
-}
-```
-
-then replace:
-```
-static BOOL AFServerTrustIsValid(SecTrustRef serverTrust) {
-    BOOL isValid = NO;
-    CFErrorRef error = nil;
-    isValid = SecTrustEvaluateWithError(serverTrust, &error);
-
-#ifdef DEBUG
-    if (!isValid) {
-        NSError *nerror = (__bridge NSError *)error;
-        NSLog(@"%@",nerror);
-    }
-#endif
-_out:
-    return isValid;
-}
-```
+- To support Capacitor this [PR](https://github.com/silkimen/cordova-plugin-advanced-http/pull/488) is needed.
+- To help with debugging cert issues this [PR](https://github.com/silkimen/cordova-plugin-advanced-http/pull/489) is needed.
+- A fork with these changes can be installed with `npm install cordova-plugin-advanced-http@https://github.com/dtarnawsky/cordova-plugin-advanced-http`
 
 ### Gotchas
 - In iOS 13 additional requirements were added to TLS certificates. These can cause an SSL failure. Read about it [here](https://support.apple.com/en-us/HT210176)
