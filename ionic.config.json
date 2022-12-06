@@ -1,0 +1,7 @@
+{
+  "name": "ionic-ssl-pinning",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
