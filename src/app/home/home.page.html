@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Blank
+      SSL Pinning
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -9,12 +9,21 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
+      <ion-title size="large">SSL Pinning</ion-title>
     </ion-toolbar>
   </ion-header>
 
+  <ion-item>
+    <ion-icon name="shield-outline"></ion-icon>
+    <ion-label>&nbsp;{{foundCertificates}} certificates found.</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-checkbox [(ngModel)]="pinningEnabled" slot="start"></ion-checkbox>
+    <ion-label>Enable SSL Pinning</ion-label>
+  </ion-item>
   <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <ion-button (click)="check()">Check</ion-button><br />
+    <ion-button (click)="checkGoogle()">Check www.google.com</ion-button><br />
+    {{pinningError}}
   </div>
 </ion-content>
