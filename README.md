@@ -13,6 +13,20 @@ Certificates need to be stored in the `www/certificates` folder. One way to ensu
 - Certificate must have a `.cer` extension.
 - Certificates must be in `DER` format.
 
+## Extract certificates via Browser
+To extract the DER for a certificate:
+- Visit the url in a browser (Microsoft Edge)
+- Click the lock symbol next to the url
+- Click the "Connection is Secure" link
+- Click the certificate symbol next to the close button
+- Click the details tab
+- Click one of the certificates in the hierarchy
+- Click Export button
+- Choose "DER-encoded binary, single certificate" as the format
+- Save the file to your certificates folder with an extension of .cer
+- Repeat these steps for each certificate in the chain
+
+## Extracting Certs with Open SSL
 This sample app connects to `https://mysafeinfo.com`. To extract the public certificates we can call:
 `openssl s_client -connect mysafeinfo.com:443 -showcerts`
 
@@ -51,3 +65,25 @@ In `src/ios/SM_AFNetworking/SM_AFSecurityPolicy.m` it is similar
     return [NSSet setWithSet:certificates];
 }
 ```
+
+then replace:
+```
+static BOOL AFServerTrustIsValid(SecTrustRef serverTrust) {
+    BOOL isValid = NO;
+    CFErrorRef error = nil;
+    isValid = SecTrustEvaluateWithError(serverTrust, &error);
+
+#ifdef DEBUG
+    if (!isValid) {
+        NSError *nerror = (__bridge NSError *)error;
+        NSLog(@"%@",nerror);
+    }
+#endif
+_out:
+    return isValid;
+}
+```
+
+### Gotchas
+- In iOS 13 additional requirements were added to TLS certificates. These can cause an SSL failure. Read about it [here](https://support.apple.com/en-us/HT210176)
+- Using OpenSSL to extract all certificates in a chain can be a challenge and may not export every certificate. You may need to export from a browser
